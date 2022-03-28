@@ -16,7 +16,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BeerRepository extends PagingAndSortingRepository<Beer, Long>   {
-List<Beer> findAllBySellPrice(Double sell_price, Pageable pageable);
-List<Beer> findByName(String name);
 
 }

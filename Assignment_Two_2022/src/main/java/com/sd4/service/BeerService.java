@@ -27,42 +27,6 @@ public class BeerService {
      @Autowired
      
        private BeerRepository beerRepo;
-     
-    private List<Beer> beers;
-
-     
-         @PostConstruct
-    public void BeerService() {
-beers = (List<Beer>) beerRepo.findAll() ;
-//brewerys = (List<Brewery>) breweryRepo.findAll();
-    }
-     
-     
-     
-    public Page<Beer> findPaginated(Pageable pageable, String name) {
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Beer> list;
-        beers = (List<Beer>) beerRepo.findByName(name);
-        if (beers.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, beers.size());
-            list = beers.subList(startItem, toIndex);
-        }
-           
-
-        Page<Beer> beerPage
-                          = new PageImpl<Beer>(list, PageRequest.of(currentPage, pageSize), beers.size());
-
-
-        return beerPage;
-    }
-
-        // Add this method
-   
-
 
     public Optional<Beer> findOne(Long id) {
         return beerRepo.findById(id);
@@ -71,15 +35,7 @@ beers = (List<Beer>) beerRepo.findAll() ;
     public List<Beer> findAll() {
         return (List<Beer>) beerRepo.findAll();
     }
-    
-    public List<Beer> findByName(String name) {
-        String name1 = name;    
-        
-        List<Beer> beerList;
-        beerList = beerRepo.findByName(name1);
-        return beerList;
-    }
-
+   
     public long count() {
         return beerRepo.count();
     }

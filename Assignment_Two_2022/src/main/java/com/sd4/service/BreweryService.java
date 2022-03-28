@@ -17,26 +17,10 @@ import org.springframework.stereotype.Service;
  * @author Cian
  */
 @Service
-
 public class BreweryService {
      @Autowired
+    private BreweryRepository breweryRepo;   
      
-       private BreweryRepository breweryRepo;
-     
-    private List<Brewery> brewerys;
-     
-         @PostConstruct
-    public void breweryService() {
-  
-brewerys = (List<Brewery>) breweryRepo.findAll() ;
-    }
-     
-     
-     
-        // Add this method
-   
-
-
     public Optional<Brewery> findOne(Long id) {
         return breweryRepo.findById(id);
     }
@@ -54,7 +38,7 @@ brewerys = (List<Brewery>) breweryRepo.findAll() ;
         breweryRepo.deleteById(beerID);
     }
 
-    public void saveBeer(Brewery a) {
+    public void saveBrewery(Brewery a) {
         breweryRepo.save(a);
         
     }  
