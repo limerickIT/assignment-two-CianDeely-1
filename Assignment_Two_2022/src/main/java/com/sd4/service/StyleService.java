@@ -4,42 +4,44 @@
  */
 package com.sd4.service;
 
-import com.sd4.model.Brewery;
-import com.sd4.repository.BreweryRepository;
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 /**
  *
  * @author Cian
  */
+ 
+import com.sd4.model.Brewery;
+import com.sd4.model.Style;
+import com.sd4.repository.BreweryRepository;
+import com.sd4.repository.StyleRepository;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 @Service
-public class BreweryService {
+public class StyleService {
      @Autowired
-    private BreweryRepository breweryRepo;   
+    private StyleRepository styleRepo;   
      
-    public Optional<Brewery> findOne(long id) {
-        return breweryRepo.findById(id);
+    public Optional<Style> findOne(long id) {
+        return styleRepo.findById(id);
     }
 
-    public List<Brewery> findAll() {
-        return (List<Brewery>) breweryRepo.findAll();
+    public List<Style> findAll() {
+        return (List<Style>) styleRepo.findAll();
     }
     
   
     public long count() {
-        return breweryRepo.count();
+        return styleRepo.count();
     }
 
     public void deleteByID(long beerID) {
-        breweryRepo.deleteById(beerID);
+        styleRepo.deleteById(beerID);
     }
 
-    public void saveBrewery(Brewery a) {
-        breweryRepo.save(a);
+    public void saveBrewery(Style a) {
+        styleRepo.save(a);
         
     } 
 }

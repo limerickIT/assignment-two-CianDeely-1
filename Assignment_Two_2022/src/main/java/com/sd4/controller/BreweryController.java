@@ -114,15 +114,12 @@ public class BreweryController {
           else
           {
           Brewery brew = b.orElse(new Brewery());
-                 // The data that the QR code will contain
-        String data = "MECARD:N:"+brew.getName() + ";" + "TEL:"+brew.getPhone() + ";" + "EMAIL:"+brew.getEmail()+ ";ADR:"+brew.getAddress1() + " " + brew.getAddress2()  + ";;";        
-
+        String data = "BEGIN:VCARD\n VERSION:3.0\nFN:"+brew.getName() + "\n" + "TEL:"+brew.getPhone() + "\n" + "EMAIL:"+brew.getEmail()+ "\nADR:"+brew.getAddress1() + " " + brew.getAddress2()  + "\nURL:" + brew.getWebsite() + "\nEND:VCARD";        
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 200, 200);
         ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
         byte[] pngData = pngOutputStream.toByteArray(); 
-        // Encoding charset
 
     return ResponseEntity.ok(pngData);
       }          

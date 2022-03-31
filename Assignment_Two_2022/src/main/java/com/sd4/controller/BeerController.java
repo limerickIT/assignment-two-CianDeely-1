@@ -13,8 +13,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.sd4.application.PDFGeneratorBeer;
 import com.sd4.model.Brewery;
+import com.sd4.model.Category;
+import com.sd4.model.Style;
 import com.sd4.service.BreweryService;
+import com.sd4.service.CategoryService;
+import com.sd4.service.StyleService;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +39,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +60,7 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -58,6 +69,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import static org.springframework.hateoas.mediatype.alps.Alps.doc;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,7 +98,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Cian
  */
 @Controller
-@RequestMapping("/beer")
 public class BeerController  {
     @Autowired
     private BeerService beerService;
@@ -94,10 +105,14 @@ public class BeerController  {
     private BreweryService breweryService;
     @Autowired
     private ResourceLoader resourceLoader;
+    @Autowired
+    private CategoryService categoryService;
+      @Autowired
+    private StyleService styleService;
     private static final Gson gson = new Gson();
 
 
-    @GetMapping(value= "", produces=MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= "beer", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Beer>> getAll()
     {
         List<Beer> beerList = beerService.findAll();
@@ -120,13 +135,49 @@ public class BeerController  {
       if(!b.isPresent()){
           return new ResponseEntity(HttpStatus.NOT_FOUND);
       } else{
-          Link selfLink =linkTo(BeerController.class).slash("").withSelfRel();
+          Link selfLink =linkTo(BeerController.class).slash("beer").withSelfRel();
                     Link allBeersLink = linkTo(methodOn(BeerController.class).getAll()).withSelfRel();
           b.get().add(selfLink);
           return ResponseEntity.ok(b.get());
       }
 }
    
+   
+   @GetMapping("beer/pdf/{id}")
+ public void generator(HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
+  response.setContentType("application/pdf");
+        Optional<Beer> b = beerService.findOne(id);
+            if(!b.isPresent()){
+                return;
+            } else{
+        Beer beer = b.orElse(new Beer());
+
+        Optional<Brewery> brew = breweryService.findOne(id);
+        Brewery brewery = brew.orElse(new Brewery());
+        Optional<Category> category = categoryService.findOne(beer.getCat_id());
+        Category cat = category.orElse(new Category());
+        Optional<Style> style = styleService.findOne(beer.getStyle_id());
+        Style beerStyle = style.orElse(new Style());
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerkey = "Content-Disposition";
+        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
+        response.setHeader(headerkey, headervalue);
+        PDFGeneratorBeer beerPDF = new PDFGeneratorBeer();
+        try{
+        Image img = Image.getInstance(getClass().getClassLoader().getResource("static/assets/images/large/"+beer.getId()+".jpg"));
+        beerPDF.setImage(img);
+        } catch (Exception exc){
+            
+        }
+        beerPDF.setBeer(beer);
+        beerPDF.setCategory(cat);
+        beerPDF.setBrewery(brewery);
+        beerPDF.setStyle(beerStyle);
+        beerPDF.generate(response);
+        
+ }
+ }
      @GetMapping(value = {"beer/image/thumbnail/{id}","beer/image/large/{id}"}, produces = MediaType.IMAGE_JPEG_VALUE)
    public ResponseEntity<byte[]> getImage(@PathVariable long id) throws WriterException, IOException, FileNotFoundException, NotFoundException{
        
@@ -142,11 +193,11 @@ public class BeerController  {
           }
         if (!resource.exists())
         {
-             if(path.contains("thumbnail")){
+            if(path.contains("thumbnail")){
             resource = resourceLoader.getResource("classpath:static/assets/images/thumbs/noimage.jpg");
           }
           else if (path.contains("large")){
-            resource = resourceLoader.getResource("classpath:static/assets/images/large/noimage.jpg");
+          resource = resourceLoader.getResource("classpath:static/assets/images/large/noimage.jpg");
           }
         }  
         File file = resource.getFile();
