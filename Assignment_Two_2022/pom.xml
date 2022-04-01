@@ -34,6 +34,16 @@
     <artifactId>commons-io</artifactId>
     <version>2.11.0</version>
 </dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>3.0.0</version>
+</dependency>
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
 
 
               <dependency>
@@ -98,7 +108,9 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+          
                 
+              
                 
     <dependency>
         <groupId>com.google.zxing</groupId>
@@ -107,10 +119,27 @@
     </dependency>
     <dependency>
         <groupId>com.google.zxing</groupId>
-        <artifactId>javase</artifactId>
+        <artifactId>javase</artifactId> 
         <version>3.3.0</version>
     </dependency>
+    
+    <dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-validation</artifactId>
+ </dependency>
+    
+    <dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
 
+	 <dependency>
+	  <groupId>org.springframework</groupId>
+	  <artifactId>spring-web</artifactId>
+	  <version>5.3.17</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

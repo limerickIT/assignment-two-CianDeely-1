@@ -5,20 +5,12 @@
 package com.sd4.application;
 
 import com.sd4.model.Beer;
-import java.io.IOException;
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import java.awt.Color;
 import java.io.IOException;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
@@ -31,14 +23,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.sd4.model.Brewery;
 import com.sd4.model.Category;
 import com.sd4.model.Style;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
-import javax.imageio.ImageIO;
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.Resource;
+
 
 /**
  *

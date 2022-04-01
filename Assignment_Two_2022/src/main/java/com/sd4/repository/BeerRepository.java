@@ -5,8 +5,6 @@
 package com.sd4.repository;
 
 import com.sd4.model.Beer;
-import java.util.List;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

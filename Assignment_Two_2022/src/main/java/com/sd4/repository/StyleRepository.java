@@ -4,7 +4,6 @@
  */
 package com.sd4.repository;
 
-import com.sd4.model.Category;
 import com.sd4.model.Style;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

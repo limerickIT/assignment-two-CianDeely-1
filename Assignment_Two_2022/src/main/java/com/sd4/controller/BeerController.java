@@ -7,12 +7,8 @@ package com.sd4.controller;
 import com.sd4.model.Beer;
 import com.sd4.service.BeerService;
 import com.google.gson.Gson;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.sd4.application.PDFGeneratorBeer;
@@ -22,72 +18,46 @@ import com.sd4.model.Style;
 import com.sd4.service.BreweryService;
 import com.sd4.service.CategoryService;
 import com.sd4.service.StyleService;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.Document;
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Positive;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import static org.springframework.hateoas.mediatype.alps.Alps.doc;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -97,7 +67,9 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  * @author Cian
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
+@Validated
 public class BeerController  {
     @Autowired
     private BeerService beerService;
@@ -130,7 +102,7 @@ public class BeerController  {
 }
     
     @GetMapping(value = "beer/{id}", produces = MediaTypes.HAL_JSON_VALUE)
-   public ResponseEntity<Beer> getOne(@PathVariable long id){
+   public ResponseEntity<Beer> getOne(@PathVariable @Positive long id){
       Optional<Beer> b = beerService.findOne(id);
       if(!b.isPresent()){
           return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -144,7 +116,7 @@ public class BeerController  {
    
    
    @GetMapping("beer/pdf/{id}")
- public void generator(HttpServletResponse response, @PathVariable long id) throws DocumentException, IOException {
+ public void generator(HttpServletResponse response, @PathVariable @Positive long id) throws DocumentException, IOException {
   response.setContentType("application/pdf");
         Optional<Beer> b = beerService.findOne(id);
             if(!b.isPresent()){
@@ -179,7 +151,7 @@ public class BeerController  {
  }
  }
      @GetMapping(value = {"beer/image/thumbnail/{id}","beer/image/large/{id}"}, produces = MediaType.IMAGE_JPEG_VALUE)
-   public ResponseEntity<byte[]> getImage(@PathVariable long id) throws WriterException, IOException, FileNotFoundException, NotFoundException{
+   public ResponseEntity<byte[]> getImage(@PathVariable @Positive long id) throws WriterException, IOException, FileNotFoundException, NotFoundException{
        
   UriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
          String path = builder.buildAndExpand().getPath();
@@ -210,7 +182,7 @@ public class BeerController  {
 }
    
       @GetMapping(value = "beer/drilldown/{id}", produces = MediaTypes.HAL_JSON_VALUE)
-   public ResponseEntity<String> drillDown(@PathVariable long id){
+   public ResponseEntity<String> drillDown(@PathVariable @Positive long id){
       Optional<Beer> b = beerService.findOne(id);
       
       if(!b.isPresent()){
@@ -232,7 +204,7 @@ public class BeerController  {
           array.add(item);          
           json.put("Beer", array);
           beerDrilldown = json.toString();
-         
+   
           return ResponseEntity.ok(beerDrilldown);
       }
 }
@@ -299,6 +271,31 @@ public class BeerController  {
 
 		return ResponseEntity.ok(streamResponseBody);
 
+}
+   
+   
+   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+@ExceptionHandler(ConstraintViolationException.class)
+public Map<String, String> handleConstraintViolation(ConstraintViolationException ex) {
+    Map<String, String> errors = new HashMap<>();
+     
+    ex.getConstraintViolations().forEach(cv -> {
+        errors.put("message", cv.getMessage());
+        errors.put("path", (cv.getPropertyPath()).toString());
+    }); 
+ 
+    return errors;
+}
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    Map<String, String> errors = new HashMap<>();
+ 
+    ex.getBindingResult().getFieldErrors().forEach(error -> 
+        errors.put(error.getField(), error.getDefaultMessage()));
+     
+    return errors;
 }
 
 //   public ResponseEntity add(@RequestBody Beer b){

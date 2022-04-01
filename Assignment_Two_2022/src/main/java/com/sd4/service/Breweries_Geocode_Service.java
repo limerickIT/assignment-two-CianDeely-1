@@ -4,9 +4,7 @@
  */
 package com.sd4.service;
 
-import com.sd4.model.Beer;
 import com.sd4.model.Breweries_Geocode;
-import com.sd4.repository.BeerRepository;
 import com.sd4.repository.BreweryGeocodeRepository;
 import java.util.List;
 import java.util.Optional;

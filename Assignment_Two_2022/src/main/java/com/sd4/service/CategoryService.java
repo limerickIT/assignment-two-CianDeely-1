@@ -4,9 +4,7 @@
  */
 package com.sd4.service;
 
-import com.sd4.model.Brewery;
 import com.sd4.model.Category;
-import com.sd4.repository.BreweryRepository;
 import com.sd4.repository.CategoryRepository;
 import java.util.List;
 import java.util.Optional;

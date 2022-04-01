@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import org.springframework.hateoas.Link;
+import javax.validation.constraints.NotEmpty;
 import org.springframework.hateoas.*;
 
 @Getter
@@ -33,6 +33,7 @@ public class Beer extends RepresentationModel<Beer> implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private long brewery_id;
+    @NotEmpty(message = "Beer name is required")
     private String name;
     private long cat_id;
     private long style_id;

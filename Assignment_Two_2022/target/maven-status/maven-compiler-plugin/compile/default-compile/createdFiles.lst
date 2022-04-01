@@ -10,11 +10,14 @@ com\sd4\service\CategoryService.class
 com\sd4\model\Style.class
 com\sd4\repository\BreweryGeocodeRepository.class
 com\sd4\controller\BeerController.class
+com\sd4\application\WebConfig.class
 com\sd4\controller\BreweryController.class
 com\sd4\repository\StyleRepository.class
+com\sd4\application\AssignmentTwo2022Application$1.class
 com\sd4\service\Breweries_Geocode_Service.class
 com\sd4\repository\BreweryRepository.class
 com\sd4\application\AssignmentTwo2022Application.class
 com\sd4\model\Beer.class
+com\sd4\application\SpringFoxConfig.class
 com\sd4\application\ServletInitializer.class
 com\sd4\service\BreweryService.class
