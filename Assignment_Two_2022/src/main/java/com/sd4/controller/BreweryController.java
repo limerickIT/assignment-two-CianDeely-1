@@ -105,7 +105,7 @@ public class BreweryController {
           
        return ResponseEntity.ok
         ("<html> <body> <h1> " + brew.getName() 
-       + "</h1> <h2> " + brew.getAddress1() + " " + brew.getAddress2() + "</h2> " 
+       + "</h1> <h2> " + brew.getAddress1() + " " + brew.getAddress2() + "</h2><br><h2>"+brew.getCity()+"</h2><br><h2>"+brew.getState()+"</h2><br><h2>"+brew.getCountry()+"</h2>"
        + " <iframe width=\"600\" height=\"450\" style=\"border:0\" loading=\"lazy\" "+"src=\"https://maps.google.com/maps?q=" 
        + brew.getName() + brew.getAddress1() + brew.getAddress2() + brew.getCity() + brew.getCountry() + "=&output=embed\">\"" );
       }
